@@ -17,10 +17,18 @@ export function activate(context: vscode.ExtensionContext) {
 		// The code you place here will be executed every time your command is executed
 
 		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Cyclomatic Complexity Calculator!');
+		vscode.window.showInformationMessage('Hello World from Noah!!');
+	});
+
+	let something = vscode.commands.registerCommand('ComplexityCalculator.something', () => {
+		// The code you place here will be executed every time your command is executed
+
+		// Display a message box to the user
+			vscode.window.showInformationMessage('This is something else?');
 	});
 
 	context.subscriptions.push(disposable);
+	context.subscriptions.push(something);
 }
 
 // this method is called when your extension is deactivated

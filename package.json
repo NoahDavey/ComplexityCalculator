@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:ComplexityCalculator.helloWorld"
+    "onCommand:ComplexityCalculator.helloWorld",
+    "onCommand:ComplexityCalculator.something"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -18,6 +19,10 @@
       {
         "command": "ComplexityCalculator.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "ComplexityCalculator.something",
+        "title": "something"
       }
     ]
   },
