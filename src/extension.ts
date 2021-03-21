@@ -3,7 +3,6 @@
 import * as vscode from 'vscode';
 import MyCodeLensProvider from './MyCodeLensProvider';
 
-
 async function test () {
 	console.log('This code lens thing worked');
 	
@@ -35,10 +34,24 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(docSelector, new MyCodeLensProvider())
 
+	let hoverProviderDisposable = vscode.languages.registerHoverProvider('javascript', {
+		provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
+			// const comentCommandUri = vscode.Uri.parse(`command:editor.action.addCommentLine`)
+			const comentCommandUri = vscode.Uri.parse(`command:ComplexityCalculator.helloWorld`)
+			const contents = new vscode.MarkdownString(`[Add comment](${comentCommandUri})`)
+			
+			contents.isTrusted = true
+
+			return new vscode.Hover(contents)
+		}
+	})
+
 
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(testDisposable);
 	context.subscriptions.push(codeLensProviderDisposable);
+	context.subscriptions.push(hoverProviderDisposable);
+
 
 }
 
