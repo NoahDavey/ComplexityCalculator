@@ -1,19 +1,29 @@
 import { CodeLens, CodeLensProvider, Command, Range, TextDocument } from "vscode";
 
 class MyCodeLensProvider implements CodeLensProvider {
+    _startLine = 0;
+    _startChar = 0;
+    _endLine = 0;
+    _endChar = 0;
+
+    constructor(startLine: number, startChar: number, endLine: number, endChar: number) {
+        this._startLine = startLine;
+        this._startChar = startChar;
+        this._endLine = endLine;
+        this._endChar = endChar;
+    }
+
     async provideCodeLenses(document: TextDocument): Promise<CodeLens[]> {
-        let topOfDocument = new Range(100,50,0,0)
-        let topOfDocument2 = new Range(100,50,25,0)
+        let position = new Range(this._startLine, this._startChar, this._endLine, this._endChar);
 
         let c: Command = {
             command: 'ComplexityCalculator.test',
             title: 'Test'
         }
 
-        let codeLens = new CodeLens(topOfDocument, c)
-        let codeLens2 = new CodeLens(topOfDocument2, c)
+        let codeLens = new CodeLens(position, c)
 
-        return [codeLens, codeLens2]
+        return [codeLens]
     }
 }
 
