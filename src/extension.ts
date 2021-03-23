@@ -61,7 +61,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 			if(currentLineText.includes('function')) {
 				console.log('Winner winner chicken dinner');
-				
+				let codeLensProviderTest = vscode.languages.registerCodeLensProvider(docSelector, new MyCodeLensProvider(currentLineNumber, 0, currentLineNumber, 25))
+				context.subscriptions.push(codeLensProviderTest)			
 			}				
 		}
 	})
