@@ -12,6 +12,8 @@ async function test () {
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
+	let activeEditor = vscode.window.activeTextEditor;
+
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "ComplexityCalculator" is now active!');
@@ -32,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 		scheme: 'file'
 	}
 
-	let codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(docSelector, new MyCodeLensProvider())
+	let codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(docSelector, new MyCodeLensProvider(0, 0, 25, 25))
 
 	let hoverProviderDisposable = vscode.languages.registerHoverProvider('javascript', {
 		provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
@@ -46,6 +48,23 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	})
 
+
+	vscode.window.onDidChangeActiveTextEditor(editor => {
+		activeEditor = editor
+	}, null, context.subscriptions)
+
+	vscode.workspace.onDidChangeTextDocument(event => {
+		if(activeEditor && event.document === activeEditor.document) {
+			const [change] = event.contentChanges
+			const currentLineNumber = change.range.start.line
+			const currentLineText = event.document.lineAt(currentLineNumber).text
+
+			if(currentLineText.includes('function')) {
+				console.log('Winner winner chicken dinner');
+				
+			}				
+		}
+	})
 
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(testDisposable);
