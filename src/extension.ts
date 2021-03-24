@@ -60,18 +60,34 @@ export function activate(context: vscode.ExtensionContext) {
 			const [change] = event.contentChanges
 			const currentLineNumber = change.range.start.line
 			const currentLineText = event.document.lineAt(currentLineNumber).text
+			const existingCodeLens = codeLensDisposables.find(x => x.lineNumber === currentLineNumber)
 
 			if(currentLineText.includes('function')) {
-				const existingCodeLens = codeLensDisposables.find(x => x.lineNumber === currentLineNumber)
-
 				if(!existingCodeLens) {
 					let codeLensProvider = vscode.languages.registerCodeLensProvider(docSelector, new MyCodeLensProvider(currentLineNumber, 0, currentLineNumber, 25))
 					
 					codeLensDisposables.push({lineNumber: currentLineNumber, codeLens: codeLensProvider})
 					context.subscriptions.push(codeLensProvider)			
 				}
+			}	
+			
+			// If adding a new line
+			if(change.text === '\n') {
+				for(const codeLensProvider of codeLensDisposables) {
+					if(!event.document.lineAt(codeLensProvider.lineNumber).text.includes('function')) {
+						codeLensProvider.codeLens.dispose()
+						
+					}
+				}
+				
+			}
 
-			}				
+			// If removing the word function
+			if(change.text === '' && !currentLineText.includes('function')) {
+				if(existingCodeLens) {
+					// existingCodeLens.codeLens.dispose()
+				}
+			}
 		}
 	})
 
