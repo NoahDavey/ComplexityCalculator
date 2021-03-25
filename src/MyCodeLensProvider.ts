@@ -19,11 +19,11 @@ class MyCodeLensProvider implements CodeLensProvider {
         let c: Command = {
             command: 'ComplexityCalculator.test',
             title: 'Test'
-        }
+        };
 
-        let codeLens = new CodeLens(position, c)
+        let codeLens = new CodeLens(position, c);
 
-        return [codeLens]
+        return [codeLens];
     }
 }
 

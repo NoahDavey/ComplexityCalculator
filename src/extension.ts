@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "ComplexityCalculator" is now active!');
 
 	let activeEditor = vscode.window.activeTextEditor;
-	let codeLensDisposables: CodeLensInfo [] = []
+	let codeLensDisposables: CodeLensInfo [] = [];
 
 	let disposable = vscode.commands.registerCommand('ComplexityCalculator.helloWorld', () => {
 		// The code you place here will be executed every time your command is executed
@@ -34,40 +34,40 @@ export function activate(context: vscode.ExtensionContext) {
 	let docSelector = {
 		language: 'javascript',
 		scheme: 'file'
-	}
+	};
 
-	let codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(docSelector, new MyCodeLensProvider(0, 0, 25, 25))
+	let codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(docSelector, new MyCodeLensProvider(0, 0, 25, 25));
 
 	let hoverProviderDisposable = vscode.languages.registerHoverProvider('javascript', {
 		provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
 			// const comentCommandUri = vscode.Uri.parse(`command:editor.action.addCommentLine`)
-			const comentCommandUri = vscode.Uri.parse(`command:ComplexityCalculator.helloWorld`)
-			const contents = new vscode.MarkdownString(`[Add comment](${comentCommandUri})`)
+			const comentCommandUri = vscode.Uri.parse(`command:ComplexityCalculator.helloWorld`);
+			const contents = new vscode.MarkdownString(`[Add comment](${comentCommandUri})`);
 			
-			contents.isTrusted = true
+			contents.isTrusted = true;
 
-			return new vscode.Hover(contents)
+			return new vscode.Hover(contents);
 		}
-	})
+	});
 
 
 	vscode.window.onDidChangeActiveTextEditor(editor => {
-		activeEditor = editor
-	}, null, context.subscriptions)
+		activeEditor = editor;
+	}, null, context.subscriptions);
 
 	vscode.workspace.onDidChangeTextDocument(event => {
 		if(activeEditor && event.document === activeEditor.document) {
-			const [change] = event.contentChanges
-			const currentLineNumber = change.range.start.line
-			const currentLineText = event.document.lineAt(currentLineNumber).text
-			const existingCodeLens = codeLensDisposables.find(x => x.lineNumber === currentLineNumber)
+			const [change] = event.contentChanges;
+			const currentLineNumber = change.range.start.line;
+			const currentLineText = event.document.lineAt(currentLineNumber).text;
+			const existingCodeLens = codeLensDisposables.find(x => x.lineNumber === currentLineNumber);
 
 			if(currentLineText.includes('function')) {
 				if(!existingCodeLens) {
-					let codeLensProvider = vscode.languages.registerCodeLensProvider(docSelector, new MyCodeLensProvider(currentLineNumber, 0, currentLineNumber, 25))
+					let codeLensProvider = vscode.languages.registerCodeLensProvider(docSelector, new MyCodeLensProvider(currentLineNumber, 0, currentLineNumber, 25));
 					
-					codeLensDisposables.push({lineNumber: currentLineNumber, codeLens: codeLensProvider})
-					context.subscriptions.push(codeLensProvider)			
+					codeLensDisposables.push({lineNumber: currentLineNumber, codeLens: codeLensProvider});
+					context.subscriptions.push(codeLensProvider);			
 				}
 			}	
 			
@@ -75,7 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
 			if(change.text === '\n') {
 				for(const codeLensProvider of codeLensDisposables) {
 					if(!event.document.lineAt(codeLensProvider.lineNumber).text.includes('function')) {
-						codeLensProvider.codeLens.dispose()
+						codeLensProvider.codeLens.dispose();
 						
 					}
 				}
@@ -89,7 +89,7 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 			}
 		}
-	})
+	});
 
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(testDisposable);

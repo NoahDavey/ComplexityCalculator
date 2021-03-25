@@ -12,13 +12,14 @@ function calculateComplexity(func: Function): number {
 
 
 function abc(something: number) {
-    if(something) {
-        return 1
+    if (something) {
+        return 1;
     } else if (!something) {
-        return 2
+        return 2;
     } else {
         console.log('or else!');
-        return 3
+        console.log('asd');
+        return 3;
     }
 }
 
