@@ -1,13 +1,6 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { Disposable } from 'vscode';
 import MyCodeLensProvider from './MyCodeLensProvider';
-
-async function test () {
-	console.log('This code lens thing worked');
-	
-}
 
 interface CodeLensInfo {
 	lineNumber: number,
@@ -15,8 +8,6 @@ interface CodeLensInfo {
 
 }
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "ComplexityCalculator" is now active!');
 
@@ -25,11 +16,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let disposable = vscode.commands.registerCommand('ComplexityCalculator.helloWorld', () => {
 		// The code you place here will be executed every time your command is executed
-
-		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from Noah!!');
 	});
-	let testDisposable = vscode.commands.registerCommand('ComplexityCalculator.test', test);
 
 	let docSelector = {
 		language: 'javascript',
@@ -92,7 +80,6 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(disposable);
-	context.subscriptions.push(testDisposable);
 	context.subscriptions.push(codeLensProviderDisposable);
 	context.subscriptions.push(hoverProviderDisposable);
 

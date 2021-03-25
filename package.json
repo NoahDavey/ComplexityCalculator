@@ -20,10 +20,6 @@
         "command": "ComplexityCalculator.helloWorld",
         "title": "Hello World"
       },
-      {
-        "command": "ComplexityCalculator.test",
-        "title": "Test"
-      }
     ]
   },
   "scripts": {
