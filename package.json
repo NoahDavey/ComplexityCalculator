@@ -19,7 +19,7 @@
       {
         "command": "ComplexityCalculator.helloWorld",
         "title": "Hello World"
-      },
+      }
     ]
   },
   "scripts": {

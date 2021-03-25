@@ -48,32 +48,40 @@ export function activate(context: vscode.ExtensionContext) {
 			const [change] = event.contentChanges;
 			const currentLineNumber = change.range.start.line;
 			const currentLineText = event.document.lineAt(currentLineNumber).text;
+			
+			// Find out if there is an existing code lens on current line
 			const existingCodeLens = codeLensDisposables.find(x => x.lineNumber === currentLineNumber);
+			
+			// Match normal and lambda functions with parameters
+			const functionRegex = /function(?=( \w* ?\([A-z0-9, ]*\) ?{))|const \w*(?=( ?= ?\([A-z0-9, ]*\) ?=> ?{))/;
+			// Should be true if function on current line, false if not
+			const functionOnLine = functionRegex.test(currentLineText);
 
-			if(currentLineText.includes('function')) {
-				if(!existingCodeLens) {
-					let codeLensProvider = vscode.languages.registerCodeLensProvider(docSelector, new MyCodeLensProvider(currentLineNumber, 0, currentLineNumber, 25));
-					
-					codeLensDisposables.push({lineNumber: currentLineNumber, codeLens: codeLensProvider});
-					context.subscriptions.push(codeLensProvider);			
-				}
+			if(functionOnLine && !existingCodeLens) {
+				let codeLensProvider = vscode.languages.registerCodeLensProvider(
+					docSelector, 
+					new MyCodeLensProvider(currentLineNumber, 0, currentLineNumber, 25)
+				);
+				
+				codeLensDisposables.push({lineNumber: currentLineNumber, codeLens: codeLensProvider});
+				context.subscriptions.push(codeLensProvider);
 			}	
 			
-			// If adding a new line
+			// If adding a new line 
 			if(change.text === '\n') {
 				for(const codeLensProvider of codeLensDisposables) {
-					if(!event.document.lineAt(codeLensProvider.lineNumber).text.includes('function')) {
+					const functionChangedLines = !functionRegex.test(event.document.lineAt(codeLensProvider.lineNumber).text);
+					if(functionChangedLines) {
 						codeLensProvider.codeLens.dispose();
-						
 					}
 				}
 				
 			}
 
 			// If removing the word function
-			if(change.text === '' && !currentLineText.includes('function')) {
+			if(change.text === '' && !functionOnLine) {
 				if(existingCodeLens) {
-					// existingCodeLens.codeLens.dispose()
+					existingCodeLens.codeLens.dispose();
 				}
 			}
 		}
