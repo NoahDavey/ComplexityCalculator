@@ -22,7 +22,20 @@ function addCodeLens(lineNumber: number, context: vscode.ExtensionContext, codeL
 	codeLensTracker;
 }
 
+function getAllFunctionDeclarations (document: vscode.TextDocument): number [] {
+	const documentArr: string[] = document.getText().split('\n');
+    
+	let declarations: number[] = [];
+	for (const [index, line] of documentArr.entries()) {
+		if(functionOnLine(line)) {
+			declarations.push(index);
+		};
+	}
+	return declarations;
+}
+
 export {
 	functionOnLine,
-	addCodeLens
+	addCodeLens,
+	getAllFunctionDeclarations
 };
