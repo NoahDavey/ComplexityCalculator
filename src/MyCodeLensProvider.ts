@@ -7,23 +7,23 @@ class MyCodeLensProvider implements CodeLensProvider {
     _endChar = 0;
 
     constructor(startLine: number, startChar: number, endLine: number, endChar: number) {
-        this._startLine = startLine;
-        this._startChar = startChar;
-        this._endLine = endLine;
-        this._endChar = endChar;
+    	this._startLine = startLine;
+    	this._startChar = startChar;
+    	this._endLine = endLine;
+    	this._endChar = endChar;
     }
 
     async provideCodeLenses(document: TextDocument): Promise<CodeLens[]> {
-        let position = new Range(this._startLine, this._startChar, this._endLine, this._endChar);
+    	let position = new Range(this._startLine, this._startChar, this._endLine, this._endChar);
 
-        let c: Command = {
-            command: 'ComplexityCalculator.test',
-            title: 'Test'
-        };
+    	let c: Command = {
+    		command: 'ComplexityCalculator.calculateComplexity',
+    		title: 'Calculate Complexity for Function'
+    	};
 
-        let codeLens = new CodeLens(position, c);
+    	let codeLens = new CodeLens(position, c);
 
-        return [codeLens];
+    	return [codeLens];
     }
 }
 

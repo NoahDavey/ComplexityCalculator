@@ -11,6 +11,7 @@
   ],
   "activationEvents": [
     "onCommand:ComplexityCalculator.helloWorld",
+    "onCommand:ComplexityCalculator.calculateComplexity",
     "onLanguage:javascript"
   ],
   "main": "./out/extension.js",
@@ -19,6 +20,10 @@
       {
         "command": "ComplexityCalculator.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "ComplexityCalculator.calculateComplexity",
+        "title": "Calculate Complexity for Function"
       }
     ]
   },

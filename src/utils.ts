@@ -62,11 +62,49 @@ function removeAllMovedCodeLenses(
 	}
 }
 
+function extractFunctions(
+	currentFunctionDeclarations: number[], 
+	document: vscode.TextDocument
+): string[] {
+
+	if(currentFunctionDeclarations) {
+		// A line by line array of the current document state
+		const documentArr: string[] = document.getText().split('\n');
+
+		// For each known function declaration
+		for(let i = 0; i < currentFunctionDeclarations.length; i++) {
+			const currentDeclaration = currentFunctionDeclarations[i];
+			const nextDeclaration = currentFunctionDeclarations[i+1] || documentArr.length - 1;
+            
+			// For the lines between this known declaration and the next known declaration
+			let bracesCounter = 0;
+			for(let line = currentDeclaration; currentDeclaration <= nextDeclaration; line++) {
+				// Count the open/closed braces in each line
+				const openBraces = (documentArr[line].match(/\(|{/g) || []).length; 
+				const closedBraces = (documentArr[line].match(/\)|}/g) || []).length;
+                
+				bracesCounter += openBraces;
+				bracesCounter -= closedBraces;
+				// If braces counter has returned to 0, should add the range to something
+				if(bracesCounter === 0) {
+					console.log('There has been a function identified!');
+					console.log('this function runs from: ');
+					console.log(`Start line: ${currentDeclaration} to end line ${line}`);
+				}
+			}
+
+		}
+        
+	}
+	return [];
+}
+
 
 export {
 	functionOnLine,
 	addCodeLens,
 	getAllFunctionDeclarations,
 	getCurrentCodeLensPositions,
-	removeAllMovedCodeLenses
+	removeAllMovedCodeLenses,
+	extractFunctions
 };

@@ -10,20 +10,9 @@ function calculateComplexity(func: Function): number {
 	return complexity;
 }
 
-
-function abc(something: number) {
-	if (something) {
-		return 1;
-	} else if (!something) {
-		return 2;
-	} else {
-		console.log('or else!');
-		console.log('asd');
-		return 3;
-	}
-}
-
-console.log(calculateComplexity(abc));
+export {
+	calculateComplexity
+};
 
 
 
