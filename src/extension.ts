@@ -39,35 +39,16 @@ export function activate(context: vscode.ExtensionContext) {
 			// Based on current state of doc, identify line numbers of where functions are
 			const currentFunctionDeclarations: number[] = getAllFunctionDeclarations(event.document);
 
+			// Add a codeLens to each of the current function declarations
 			for(const functionDeclaration of currentFunctionDeclarations) {
 				addCodeLens(functionDeclaration, context, codeLensTracker);
 			}
 			
+			// Identify the line position of current codeLenses in the file 
 			const currentCodeLensPositions: number[] = getCurrentCodeLensPositions(codeLensTracker);
 			
-			// identify matching indexes in both lists and dispose of all other lens's
+			// Dispose of any code lenses that should no longer be where they are
 			removeAllMovedCodeLenses(currentFunctionDeclarations, currentCodeLensPositions, codeLensTracker);
-
-			// Compare the identified location of keywords to an array of previous keywords
-
-			// Leave unchanged ones alone
-			// Any changed ones, delete old code lens and create new one
-			
-			// const [change] = event.contentChanges;
-			
-			// const currentLineNumber = change.range.start.line;
-			// const currentLineText = event.document.lineAt(currentLineNumber).text;
-
-			
-			// // Find out if there is an existing code lens on current line
-			// const existingCodeLens = codeLensTracker.find(x => x.lineNumber === currentLineNumber);
-			
-			// // Should be true if function on current line, false if not
-			// const isFunctionOnLine = functionOnLine(currentLineText);
-
-			// const documentArr: string[] = event.document.getText().split('\n');
-			// // const currentFunctionDeclarations = getAllIndexes(documentArr, functionRegex);
-			// previousFunctionDeclarations = [...currentFunctionDeclarations];
 		}
 	});
 

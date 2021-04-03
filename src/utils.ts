@@ -4,13 +4,16 @@ import MyCodeLensProvider from './MyCodeLensProvider';
 
 const docSelector = { language: 'javascript', scheme: 'file' };
 function addCodeLens(lineNumber: number, context: vscode.ExtensionContext, codeLensTracker: CodeLensInfo []) {
-	let codeLensProvider = vscode.languages.registerCodeLensProvider(
-		docSelector, 
-		new MyCodeLensProvider(lineNumber, 0, lineNumber, 25)
-	);
-    
-	context.subscriptions.push(codeLensProvider);
-	codeLensTracker.push({codeLens: codeLensProvider, lineNumber: lineNumber});
+	const existingCodeLens = codeLensTracker.find(codeLens => codeLens.lineNumber === lineNumber);
+	if(!existingCodeLens) {
+		let codeLensProvider = vscode.languages.registerCodeLensProvider(
+			docSelector, 
+			new MyCodeLensProvider(lineNumber, 0, lineNumber, 25)
+		);
+        
+		context.subscriptions.push(codeLensProvider);
+		codeLensTracker.push({codeLens: codeLensProvider, lineNumber: lineNumber});
+	}
 }
 
 function functionOnLine(currentLineText: string): Boolean {
