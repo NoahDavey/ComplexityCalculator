@@ -62,11 +62,22 @@ function removeAllMovedCodeLenses(
 	}
 }
 
+// Given a startLine, endLine and docmentArray, returns function as a concatenated string 
+function getFunctionText(startLine: number, endLine: number, documentArr: string[]): string {
+	let concatenatedFunction: string = '';
+	for(let line = startLine; line <= endLine; line++) {
+		concatenatedFunction += documentArr[line];
+	}
+	
+	return concatenatedFunction;
+}
+
+
 function extractFunctions(
 	currentFunctionDeclarations: number[], 
 	document: vscode.TextDocument
 ): string[] {
-
+	const extractedFunctions: string[] = [];
 	if(currentFunctionDeclarations) {
 		// A line by line array of the current document state
 		const documentArr: string[] = document.getText().split('\n');
@@ -78,25 +89,33 @@ function extractFunctions(
             
 			// For the lines between this known declaration and the next known declaration
 			let bracesCounter = 0;
-			for(let line = currentDeclaration; currentDeclaration <= nextDeclaration; line++) {
+			let closingBracket = undefined;
+			for(let line = currentDeclaration; currentDeclaration < nextDeclaration; line++) {
 				// Count the open/closed braces in each line
 				const openBraces = (documentArr[line].match(/\(|{/g) || []).length; 
 				const closedBraces = (documentArr[line].match(/\)|}/g) || []).length;
                 
 				bracesCounter += openBraces;
 				bracesCounter -= closedBraces;
-				// If braces counter has returned to 0, should add the range to something
+				// If braces counter has returned to 0, found a valid function declaration, record closing bracket line
 				if(bracesCounter === 0) {
-					console.log('There has been a function identified!');
-					console.log('this function runs from: ');
-					console.log(`Start line: ${currentDeclaration} to end line ${line}`);
+					closingBracket = line;
+					break;
 				}
+			}
+
+			// If we have identified a valid function, concatenate into a string and add to extractedFunctions
+			if(closingBracket) {
+				const funcText: string = 
+					getFunctionText(currentDeclaration, closingBracket, documentArr);
+				console.log(funcText);
+								
 			}
 
 		}
         
 	}
-	return [];
+	return extractedFunctions;
 }
 
 
