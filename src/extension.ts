@@ -6,6 +6,7 @@ import {
 	removeAllMovedCodeLenses,
 	extractFunctions
 } from './utils';
+import { calculateComplexity } from './calculateComplexity';
 import { CodeLensInfo } from './@types';
 import MyCodeLensProvider from './MyCodeLensProvider';
 
@@ -60,7 +61,14 @@ export function activate(context: vscode.ExtensionContext) {
 			// Dispose of any code lenses that should no longer be where they are
 			removeAllMovedCodeLenses(currentFunctionDeclarations, currentCodeLensPositions, codeLensTracker);
 		
-			extractFunctions(currentFunctionDeclarations, event.document);
+			const extractedFunctions: string[] = 
+				extractFunctions(currentFunctionDeclarations, event.document);
+			console.log(extractedFunctions);
+
+			for (const func of extractedFunctions) {
+				console.log(calculateComplexity(func));
+			}
+			
 		}
 	});
 

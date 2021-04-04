@@ -108,8 +108,7 @@ function extractFunctions(
 			if(closingBracket) {
 				const funcText: string = 
 					getFunctionText(currentDeclaration, closingBracket, documentArr);
-				console.log(funcText);
-								
+				extractedFunctions.push(funcText);
 			}
 
 		}
