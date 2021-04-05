@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { CodeLensInfo } from './@types';
+import { CodeLensInfo, FunctionInfo, HoverInfo } from './@types';
+import ComplexityHoverProvider from './ComplexityHoverProvider';
 import MyCodeLensProvider from './MyCodeLensProvider';
 
 const docSelector = { language: 'javascript', scheme: 'file' };
@@ -8,11 +9,27 @@ function addCodeLens(lineNumber: number, context: vscode.ExtensionContext, codeL
 	if(!existingCodeLens) {
 		let codeLensProvider = vscode.languages.registerCodeLensProvider(
 			docSelector, 
-			new MyCodeLensProvider(lineNumber, 0, lineNumber, 25)
+			new MyCodeLensProvider(lineNumber, 0, lineNumber, 25, lineNumber.toString())
 		);
         
 		context.subscriptions.push(codeLensProvider);
 		codeLensTracker.push({codeLens: codeLensProvider, lineNumber: lineNumber});
+	}
+}
+
+function addHover(lineNumber: number, complexity: number, context: vscode.ExtensionContext, hoverTracker: HoverInfo []) {
+	let hoverProvider = vscode.languages.registerHoverProvider(
+		docSelector,
+		new ComplexityHoverProvider(lineNumber, 0, lineNumber, 25, complexity)
+	);
+
+	context.subscriptions.push(hoverProvider);
+	hoverTracker.push({hover: hoverProvider, lineNumber: lineNumber});
+}
+
+function removeAllHovers(hoverTracker: HoverInfo []) {
+	for (const existingHover of hoverTracker) {
+		existingHover.hover.dispose();
 	}
 }
 
@@ -76,8 +93,8 @@ function getFunctionText(startLine: number, endLine: number, documentArr: string
 function extractFunctions(
 	currentFunctionDeclarations: number[], 
 	document: vscode.TextDocument
-): string[] {
-	const extractedFunctions: string[] = [];
+): FunctionInfo[] {
+	const extractedFunctions: FunctionInfo[] = [];
 	if(currentFunctionDeclarations) {
 		// A line by line array of the current document state
 		const documentArr: string[] = document.getText().split('\n');
@@ -108,7 +125,11 @@ function extractFunctions(
 			if(closingBracket) {
 				const funcText: string = 
 					getFunctionText(currentDeclaration, closingBracket, documentArr);
-				extractedFunctions.push(funcText);
+				extractedFunctions.push({
+					startLine: currentDeclaration, 
+					endLine: closingBracket, 
+					functionText: funcText
+				});
 			}
 
 		}
@@ -121,6 +142,8 @@ function extractFunctions(
 export {
 	functionOnLine,
 	addCodeLens,
+	addHover,
+	removeAllHovers,
 	getAllFunctionDeclarations,
 	getCurrentCodeLensPositions,
 	removeAllMovedCodeLenses,
