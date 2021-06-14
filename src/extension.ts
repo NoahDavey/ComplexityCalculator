@@ -48,9 +48,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 			// Add a codeLens/hover to each of the current function declarations
 			for(const func of extractedFunctions) {
-				addCodeLens(func.startLine, context, codeLensTracker);
-
 				const functionComplexity = calculateComplexity(func.functionText);
+				
+				addCodeLens(func.startLine, context, codeLensTracker, functionComplexity);
 				addHover(func.startLine, functionComplexity, context, hoverTracker);
 			}
 			

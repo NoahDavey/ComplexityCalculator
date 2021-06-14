@@ -20,7 +20,7 @@ class MyCodeLensProvider implements CodeLensProvider {
 
     	let c: Command = {
     		command: 'ComplexityCalculator.calculateComplexity',
-    		title: `Calculate Complexity for: ${this._functionName}`
+    		title: `Function Complexity: ${this._functionName}`
     	};
 
     	let codeLens = new CodeLens(position, c);

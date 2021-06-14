@@ -4,12 +4,12 @@ import ComplexityHoverProvider from './ComplexityHoverProvider';
 import MyCodeLensProvider from './MyCodeLensProvider';
 
 const docSelector = { language: 'javascript', scheme: 'file' };
-function addCodeLens(lineNumber: number, context: vscode.ExtensionContext, codeLensTracker: CodeLensInfo []) {
+function addCodeLens(lineNumber: number, context: vscode.ExtensionContext, codeLensTracker: CodeLensInfo [], complexity: number ) {
 	const existingCodeLens = codeLensTracker.find(codeLens => codeLens.lineNumber === lineNumber);
 	if(!existingCodeLens) {
 		let codeLensProvider = vscode.languages.registerCodeLensProvider(
 			docSelector, 
-			new MyCodeLensProvider(lineNumber, 0, lineNumber, 25, lineNumber.toString())
+			new MyCodeLensProvider(lineNumber, 0, lineNumber, 25, complexity.toString())
 		);
         
 		context.subscriptions.push(codeLensProvider);
